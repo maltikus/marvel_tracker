@@ -57,6 +57,43 @@ browser bundle. Unresolvable titles fall back to placeholders automatically; add
 verified TMDB ids to the `OVERRIDES` map in `scripts/build-data.ts` for one-shots
 / shorts / specials that don't resolve cleanly.
 
+## Cloud sync & login (optional)
+
+By default progress is stored per-browser in `localStorage`. To sync across
+devices and let multiple people use one deployment (each with private
+progress), wire up a free **Supabase** project. The app degrades gracefully to
+local-only when this isn't configured.
+
+1. Create a project at https://supabase.com.
+2. **SQL Editor → New query** → paste [`supabase/schema.sql`](supabase/schema.sql)
+   → **Run**. This creates a `progress` table with Row Level Security so each
+   user only ever sees their own row.
+3. **Authentication → Providers → Email**: keep *Email* enabled. For quick
+   testing you may turn *Confirm email* off (Authentication → Sign In / Providers);
+   otherwise new users must click the confirmation link before signing in.
+4. **Project Settings → API**: copy the **Project URL** and the **anon public**
+   key into your `.env`:
+
+   ```
+   VITE_SUPABASE_URL=https://xxxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJ...
+   ```
+
+   These are *public* values (safe in the browser and in the repo) — the anon key
+   is only useful together with the RLS policies above.
+5. For the deployed site, add the same two as repository **Variables** (not
+   secrets): **Settings → Secrets and variables → Actions → Variables** →
+   `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`. The deploy workflow reads them.
+
+Then the ☁ button in the header offers sign-in / sign-up. On first sign-in, any
+guest progress already on the device is merged into the account. After that,
+changes push automatically (debounced) and other devices pull on load.
+
+> Sync is a whole-blob, last-write-wins model with a union-merge on first
+> sign-in. It's built for accumulating progress across devices; two devices
+> editing *concurrently* can resurrect an un-checked item. Fine for one person
+> on several devices; not a real-time collaborative editor.
+
 ## Deploying to GitHub Pages
 
 1. Push to GitHub and set **Settings → Pages → Source: GitHub Actions**.

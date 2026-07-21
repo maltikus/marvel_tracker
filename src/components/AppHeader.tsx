@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { BarChart3, EyeOff, Grid2x2, Rows3, Search, SlidersHorizontal, Tv, X } from 'lucide-react';
+import { BarChart3, Cloud, CloudOff, EyeOff, Grid2x2, Rows3, Search, SlidersHorizontal, Tv, X } from 'lucide-react';
 import { hasActiveFilters, useUi } from '../store/ui';
 import { useStore } from '../store/store';
+import { useAuth } from '../store/auth';
 
 function SegToggle<T extends string>({
   value,
@@ -40,6 +41,8 @@ export default function AppHeader() {
   const toggleFilters = useUi((s) => s.toggleFilters);
   const toggleSettings = useUi((s) => s.toggleSettings);
   const toggleStats = useUi((s) => s.toggleStats);
+  const toggleAuth = useUi((s) => s.toggleAuth);
+  const authStatus = useAuth((s) => s.status);
 
   const settings = useStore((s) => s.settings);
   const setSetting = useStore((s) => s.setSetting);
@@ -157,6 +160,18 @@ export default function AppHeader() {
             className="grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface-2 text-muted transition hover:text-ink"
           >
             <BarChart3 size={16} />
+          </button>
+          <button
+            onClick={() => toggleAuth(true)}
+            title={authStatus === 'signed_in' ? 'Account & sync' : 'Sign in for cross-device sync'}
+            aria-label="Account and cloud sync"
+            className={`grid h-9 w-9 place-items-center rounded-lg border transition ${
+              authStatus === 'signed_in'
+                ? 'border-accent bg-accent/15 text-accent-soft'
+                : 'border-border bg-surface-2 text-muted hover:text-ink'
+            }`}
+          >
+            {authStatus === 'signed_in' ? <Cloud size={16} /> : <CloudOff size={16} />}
           </button>
           <button
             onClick={() => toggleSettings(true)}

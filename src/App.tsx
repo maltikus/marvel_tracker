@@ -4,6 +4,7 @@ import { useCatalog } from './hooks/useCatalog';
 import { useHashRoute } from './hooks/useHashRoute';
 import { CatalogContext, useUnits } from './context/CatalogContext';
 import { useStore } from './store/store';
+import { useAuth } from './store/auth';
 import { visibleUnits, nextUp, hasEpisodes } from './data/selectors';
 import { useWatchActions } from './hooks/useWatchActions';
 import AppHeader from './components/AppHeader';
@@ -12,6 +13,7 @@ import Home from './components/Home';
 import DetailView from './components/DetailView';
 import SettingsPanel from './components/SettingsPanel';
 import StatsDashboard from './components/StatsDashboard';
+import AuthPanel from './components/AuthPanel';
 import Toaster from './components/Toaster';
 import Footer from './components/Footer';
 
@@ -42,6 +44,11 @@ export default function App() {
   const route = useHashRoute();
   const theme = useStore((s) => s.settings.theme);
   const reduceMotion = useStore((s) => s.settings.reduceMotion);
+  const initAuth = useAuth((s) => s.init);
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -97,6 +104,7 @@ export default function App() {
           {route.path === '/unit' && route.unitId && <DetailView unitId={route.unitId} />}
           <SettingsPanel />
           <StatsDashboard />
+          <AuthPanel />
           <Toaster />
         </div>
       </LayoutGroup>

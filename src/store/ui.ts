@@ -14,11 +14,13 @@ interface UiState {
   filtersOpen: boolean;
   settingsOpen: boolean;
   statsOpen: boolean;
+  authOpen: boolean;
   setFilter: <K extends keyof Filters>(key: K, value: Filters[K]) => void;
   resetFilters: () => void;
   toggleFilters: (open?: boolean) => void;
   toggleSettings: (open?: boolean) => void;
   toggleStats: (open?: boolean) => void;
+  toggleAuth: (open?: boolean) => void;
 }
 
 const emptyFilters: Filters = {
@@ -34,11 +36,13 @@ export const useUi = create<UiState>((set) => ({
   filtersOpen: false,
   settingsOpen: false,
   statsOpen: false,
+  authOpen: false,
   setFilter: (key, value) => set((s) => ({ filters: { ...s.filters, [key]: value } })),
   resetFilters: () => set({ filters: emptyFilters }),
   toggleFilters: (open) => set((s) => ({ filtersOpen: open ?? !s.filtersOpen })),
   toggleSettings: (open) => set((s) => ({ settingsOpen: open ?? !s.settingsOpen })),
   toggleStats: (open) => set((s) => ({ statsOpen: open ?? !s.statsOpen })),
+  toggleAuth: (open) => set((s) => ({ authOpen: open ?? !s.authOpen })),
 }));
 
 export const hasActiveFilters = (f: Filters): boolean =>

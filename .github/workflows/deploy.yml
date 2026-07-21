@@ -40,6 +40,11 @@ jobs:
           # Defaults to the project-site path for this repo. Override with a
           # repo variable BASE_PATH (e.g. '/' for a user/org or custom-domain site).
           BASE_PATH: ${{ vars.BASE_PATH || '/marvel_tracker/' }}
+          # Cloud sync (optional). These are public values — set them as repo
+          # *variables* (Settings → Secrets and variables → Actions → Variables).
+          # Empty = app runs local-only.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
         run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
