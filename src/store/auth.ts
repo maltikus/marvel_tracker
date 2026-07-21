@@ -65,7 +65,14 @@ export const useAuth = create<AuthState>((set) => ({
   signUp: async (email, password) => {
     if (!supabase) return;
     set({ busy: true, error: null, info: null });
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    // Send the confirmation link back to this app (not Supabase's default Site
+    // URL). The target must also be in the project's Redirect URL allow-list.
+    const emailRedirectTo = `${window.location.origin}${import.meta.env.BASE_URL}`;
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo },
+    });
     if (error) {
       set({ busy: false, error: error.message });
       return;
