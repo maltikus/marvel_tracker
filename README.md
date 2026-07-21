@@ -71,19 +71,21 @@ local-only when this isn't configured.
 3. **Authentication → Providers → Email**: keep *Email* enabled. For quick
    testing you may turn *Confirm email* off (Authentication → Sign In / Providers);
    otherwise new users must click the confirmation link before signing in.
-4. **Project Settings → API**: copy the **Project URL** and the **anon public**
-   key into your `.env`:
+4. **Project Settings → API keys**: copy the **Project URL** and the
+   **Publishable key** (`sb_publishable_…`) into your `.env`:
 
    ```
    VITE_SUPABASE_URL=https://xxxx.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJ...
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
    ```
 
-   These are *public* values (safe in the browser and in the repo) — the anon key
-   is only useful together with the RLS policies above.
+   These are *public* values (safe in the browser and in the repo) — the
+   publishable key is only useful together with the RLS policies above. (The
+   legacy `anon` key still works via `VITE_SUPABASE_ANON_KEY` as a fallback.)
 5. For the deployed site, add the same two as repository **Variables** (not
    secrets): **Settings → Secrets and variables → Actions → Variables** →
-   `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`. The deploy workflow reads them.
+   `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`. The deploy workflow
+   reads them.
 
 Then the ☁ button in the header offers sign-in / sign-up. On first sign-in, any
 guest progress already on the device is merged into the account. After that,
